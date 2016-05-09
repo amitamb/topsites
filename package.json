@@ -2,9 +2,12 @@
   "name": "topsites",
   "version": "1.0.0",
   "description": "Provides autocomplete API when given prefix of top million sites.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.13.4"
   },
   "author": "Amit Ambardekar",
   "license": "ISC"
