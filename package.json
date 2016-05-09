@@ -1,0 +1,11 @@
+{
+  "name": "topsites",
+  "version": "1.0.0",
+  "description": "Provides autocomplete API when given prefix of top million sites.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Amit Ambardekar",
+  "license": "ISC"
+}
