@@ -6,35 +6,45 @@ const csv = require('fast-csv');
 var redis = require('redis');
 if (process.env.REDISCLOUD_URL) {
   var client = redis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
+  console.log("Working");
 }
 else {
   var client = redis.createClient({no_ready_check: true});
 }
 
 // clear out DB
-redis.flushdb()
+client.flushdb()
 
-// fs.createReadStream("./data/top-100.csv")
-//   .pipe(csv())
-//   .on("data", function(data){
-//     var rank = parseInt(data[0]);
-//     var site = data[1];
-//     var prefix;
-//     for ( var i = 0; i < site.length ; i++ ) {
-//       prefix = site.slice(0, i+1);
-//       console.log(prefix);
-//       client.zincrby('sst1:' + prefix, 1, site);
-//     }
-//     console.log(data);
-//   })
-//   .on("end", function(){
-//     console.log("done");
-//   });
+var counter = 0;
 
-var searchPrefix = "c";
-client.zrevrange('sst1:' + searchPrefix, 0, 10, function(err, members) {
-  console.log(members);
-});
+fs.createReadStream("./data/top-10k.csv")
+  .pipe(csv())
+  .on("data", function(data){
+    
+    counter++;
+    if (counter%1000==0) {
+      console.log("Processed :", counter);
+    }
+    
+    var rank = parseInt(data[0]);
+    var site = data[1];
+    var prefix;
+    for ( var i = 0; i < site.length ; i++ ) {
+      prefix = site.slice(0, i+1);
+      // console.log(prefix);
+      
+      client.zincrby('sst1:' + prefix, 10000 / rank, site);
+    }
+    // console.log(data);
+  })
+  .on("end", function(){
+    console.log("done");
+  });
+
+// var searchPrefix = "reddit";
+// client.zrevrange('sst1:' + searchPrefix, 0, 100, function(err, members) {
+//   console.log(members);
+// });
   
 // rc.zincrby('myset', 1, 'usera');
 // rc.zincrby('myset', 5, 'userb');
